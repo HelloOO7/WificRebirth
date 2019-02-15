@@ -1,0 +1,226 @@
+--- WificActivity.smali
++++ WificActivityPatched.smali
+@@ -843,13 +843,11 @@
+ .end method
+ 
+ .method public static isNetworkAvailable(Landroid/content/Context;)Z
+-    .locals 5
++    .locals 4
+     .param p0, "context"    # Landroid/content/Context;
+ 
+     .prologue
+     const/4 v2, 0x0
+-
+-    const/4 v3, 0x0	# Create an extra register for tricking Wific into thinking that network features are off
+ 
+     .line 510
+     if-nez p0, :cond_1
+@@ -857,7 +855,7 @@
+     .line 517
+     :cond_0
+     :goto_0
+-    return v3	# Override all checks and conditions and return our previously created register
++    return v2
+ 
+     .line 512
+     :cond_1
+@@ -894,22 +892,20 @@
+ .end method
+ 
+ .method public static isNetworkAvailable(Landroid/content/Context;I)Z
+-    .locals 5
++    .locals 4
+     .param p0, "context"    # Landroid/content/Context;
+     .param p1, "type"    # I
+ 
+     .prologue
+     const/4 v2, 0x0
+ 
+-    const/4 v3, 0x0	# Create an extra register for tricking Wific into thinking that network features are off
+-
+     .line 523
+     if-nez p0, :cond_1
+ 
+     .line 532
+     :cond_0
+     :goto_0
+-    return v3	# Override all checks and conditions and return our previously created register
++    return v2
+ 
+     .line 525
+     :cond_1
+@@ -1144,125 +1140,9 @@
+ 
+     move-result-object p0
+ 
+-    goto :goto_1
+-.end method
+-
+-.method private preloadAssets()V	# Copies the local Wi-Fi DB to private storage on first launch. This was made in Android Studio, then decompiled and copied over.
+-    .locals 6
+-
+-    .line 121
+-    new-instance v0, Ljava/io/File;
+-
+-    new-instance v1, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    invoke-virtual {p0}, Lcom/epicqueststudios/wific/WificActivity;->getFilesDir()Ljava/io/File;
+-
+-    move-result-object v2
+-
+-    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+-
+-    const-string v2, "/databases/wifiNetworksManager"
+-
+-    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v1
+-
+-    invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+-
+-    .line 122
+-    .local v0, "f":Ljava/io/File;
+-    invoke-virtual {v0}, Ljava/io/File;->exists()Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_0
+-
+-    .line 123
+-    return-void
+-
+-    .line 125
+-    :cond_0
+-    invoke-virtual {p0}, Lcom/epicqueststudios/wific/WificActivity;->getAssets()Landroid/content/res/AssetManager;
+-
+-    move-result-object v1
+-
+-    .line 127
+-    .local v1, "am":Landroid/content/res/AssetManager;
+-    :try_start_0
+-    const-string v2, "wifiNetworksManager"
+-
+-    invoke-virtual {v1, v2}, Landroid/content/res/AssetManager;->open(Ljava/lang/String;)Ljava/io/InputStream;
+-
+-    move-result-object v2
+-
+-    .line 128
+-    .local v2, "is":Ljava/io/InputStream;
+-    new-instance v3, Ljava/io/FileOutputStream;
+-
+-    new-instance v4, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    invoke-virtual {p0}, Lcom/epicqueststudios/wific/WificActivity;->getFilesDir()Ljava/io/File;
+-
+-    move-result-object v5
+-
+-    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+-
+-    const-string v5, "/databases/wifiNetworksManager"
+-
+-    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v4
+-
+-    invoke-direct {v3, v4}, Ljava/io/FileOutputStream;-><init>(Ljava/lang/String;)V
+-
+-    .line 129
+-    .local v3, "os":Ljava/io/OutputStream;
+-    invoke-virtual {v2}, Ljava/io/InputStream;->available()I
+-
+-    move-result v4
+-
+-    new-array v4, v4, [B
+-
+-    .line 130
+-    .local v4, "b":[B
+-    invoke-virtual {v2, v4}, Ljava/io/InputStream;->read([B)I
+-
+-    .line 131
+-    invoke-virtual {v3, v4}, Ljava/io/OutputStream;->write([B)V
+-
+-    .line 132
+-    invoke-virtual {v3}, Ljava/io/OutputStream;->flush()V
+-    :try_end_0
+-    .catch Ljava/io/IOException; {:try_start_0 .. :try_end_0} :catch_0
+-
+-    .line 135
+-    .end local v2    # "is":Ljava/io/InputStream;
+-    .end local v3    # "os":Ljava/io/OutputStream;
+-    .end local v4    # "b":[B
+-    goto :goto_0
+-
+-    .line 133
+-    :catch_0
+-    move-exception v2
+-
+-    .line 134
+-    .local v2, "e":Ljava/io/IOException;
+-    invoke-virtual {v2}, Ljava/io/IOException;->printStackTrace()V
+-
+-    .line 136
+-    .end local v2    # "e":Ljava/io/IOException;
+-    :goto_0
+-    return-void
+-.end method
+-
++    goto :goto_1
++.end method
++
+ .method private restoreInstanceState(Landroid/os/Bundle;)V
+     .locals 2
+     .param p1, "savedInstanceState"    # Landroid/os/Bundle;
+@@ -4074,7 +3954,7 @@
+ .end method
+ 
+ .method protected onCreate(Landroid/os/Bundle;)V
+-    .locals 10	# More registers for dummy user creation
++    .locals 4
+     .param p1, "savedInstanceState"    # Landroid/os/Bundle;
+ 
+     .prologue
+@@ -4082,8 +3962,6 @@
+ 
+     .line 121
+     invoke-super {p0, p1}, Landroid/support/v4/app/FragmentActivity;->onCreate(Landroid/os/Bundle;)V
+-
+-    invoke-direct {p0}, Lcom/epicqueststudios/wific/WificActivity;->preloadAssets()V	# Call our DB-copying method
+ 
+     .line 122
+     invoke-virtual {p0}, Lcom/epicqueststudios/wific/WificActivity;->getApplication()Landroid/app/Application;
+@@ -4187,26 +4065,6 @@
+     iget-object v2, v2, Lcom/epicqueststudios/wific/WificApp;->mProduct:Lcom/epicqueststudios/wific/WificProduct;
+ 
+     invoke-virtual {v2, p0}, Lcom/epicqueststudios/wific/WificProduct;->init(Lcom/epicqueststudios/wific/WificActivity;)V
+-
+-    const-string v4, "WificDummy"	# Dummy username
+-
+-    const-string v5, "dummyPass"	# Dummy password
+-
+-    const-string v6, "dummy@wific.hack"	# Dummy e-mail address
+-
+-    const-string v7, "CZ"		# Dummy country
+-
+-    const/4 v9, 0x0			# Null ParseUser reference
+-
+-    invoke-static {v9, v4, v5, v6, v7}, Lcom/epicqueststudios/wific/ParseDBHelper;->createUser(Lcom/parse/ParseUser;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/parse/ParseUser;	# Create our ParseUser Object
+-
+-    move-result-object v8	# Store the reference into a register
+-
+-    .line 219
+-    .local v8, "user":Lcom/parse/ParseUser;
+-    const/4 v9, 0x1	# Re-use our ParseUser reference register for a userLogged boolean. The method does not seem to make use of it though.
+-
+-    invoke-virtual {p0, v9, v8}, Lcom/epicqueststudios/wific/WificActivity;->userLogged(ZLcom/parse/ParseUser;)V	# Log in our dummy user
+ 
+     .line 150
+     invoke-virtual {p0}, Lcom/epicqueststudios/wific/WificActivity;->getIntent()Landroid/content/Intent;
+

@@ -1,0 +1,12 @@
+--- ParseDBHelper.smali
++++ ParseDBHelperPatched.smali
+@@ -639,7 +639,7 @@
+     .param p4, "country"    # Ljava/lang/String;
+ 
+     .prologue
+-    const/4 v4, 0x1	# Return "true" for isAdmin and schvalilPodminky
++    const/4 v4, 0x0
+ 
+     .line 393
+     if-eqz p0, :cond_5
+

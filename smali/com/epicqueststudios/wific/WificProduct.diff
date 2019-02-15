@@ -1,0 +1,12 @@
+--- WificProduct.smali
++++ WificProductPatched.smali
+@@ -1211,7 +1211,7 @@
+     .param p1, "activity"    # Lcom/epicqueststudios/wific/WificActivity;
+ 
+     .prologue
+-    const/4 v2, 0x1
++    const/4 v2, 0x0	# Always return "true" when Wific asks for IAP status
+ 
+     .line 404
+     if-eqz p1, :cond_0
+
